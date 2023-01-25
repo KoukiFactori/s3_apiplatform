@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=8.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "api-platform/core": "^2.7",
@@ -71,7 +71,10 @@
         "start": [
             "Composer\\Config::disableProcessTimeout",
             "symfony serve"
-        ]
+        ],
+        "test:cs": "php-cs-fixer fix --dry-run",
+        "fix:cs": "php-cs-fixer fix",
+        "test": "@test:cs"
     },
     "conflict": {
         "symfony/symfony": "*"
