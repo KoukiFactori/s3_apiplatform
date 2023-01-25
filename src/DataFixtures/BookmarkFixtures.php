@@ -12,7 +12,7 @@ class BookmarkFixtures extends Fixture
     {
         BookmarkFactory::createSequence(
             json_decode(
-                file_get_contents(__DIR__ . "/data/bookmarks.json"),
+                file_get_contents(__DIR__.'/data/bookmarks.json'),
                 true
             )
         );
