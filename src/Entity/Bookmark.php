@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 )]
 #[ApiFilter(
     OrderFilter::class,
-    properties: ["creationDate", "name", "rateAverage"]
+    properties: ['creationDate', 'name', 'rateAverage']
 )]
 #[ApiFilter(
     BooleanFilter::class,
@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
 )]
 #[ApiFilter(
     SearchFilter::class,
-    properties: ["name" => "partial", "description" => "partial"]
+    properties: ['name' => 'partial', 'description' => 'partial']
 )]
 class Bookmark
 {
