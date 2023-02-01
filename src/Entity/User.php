@@ -2,21 +2,35 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use App\Repository\UserRepository;
+use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => 'get_User']),
+        new Put(normalizationContext: ['groups' => 'set_User']),
+        new Patch(normalizationContext: ['groups' => 'set_User'])
+    ]
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['get_User'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['get_User', 'set_User'])]
     private ?string $login = null;
 
     #[ORM\Column]
@@ -26,18 +40,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['set_User'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 30)]
+    #[Groups(['get_User', 'set_User'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 40)]
+    #[Groups(['get_User', 'set_User'])]
     private ?string $lastname = null;
 
     #[ORM\Column(type: Types::BLOB)]
     private $avatar = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['set_User'])]
     private ?string $mail = null;
 
     public function getId(): ?int
