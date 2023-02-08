@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Put;
 use App\Controller\GetAvatarController;
+use App\Controller\GetMeController;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +26,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     controller: GetAvatarController::class,
     openapiContext: [
-        'summary' => 'Retrieve a User avatar',
+        'summary' => 'Retrieves a User avatar',
         'responses' => [
             '200' => [
                 'description' => 'User avatar',
@@ -36,6 +38,25 @@ use Symfony\Component\Serializer\Annotation\Groups;
                         ],
                     ],
                 ],
+            ],
+        ],
+    ]
+)]
+#[GetCollection(
+    controller: GetMeController::class,
+    paginationEnabled: false,
+    security: 'is_granted("ROLE_USER")',
+    normalizationContext: ['groups' => ['get_User', 'get_Me']],
+    uriTemplate: '/me',
+    openapiContext: [
+        'summary' => 'Retrieves the connected user',
+        'description' => 'Retrieves the current connected user',
+        'responses' => [
+            '200' => [
+                'description' => 'User!!!!',
+            ],
+            '400' => [
+                'description' => 'Throw an error when not connected',
             ],
         ],
     ]
@@ -76,7 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $avatar = null;
 
     #[ORM\Column(length: 100)]
-    #[Groups(['set_User'])]
+    #[Groups(['get_Me', 'set_User'])]
     private ?string $mail = null;
 
     public function getId(): ?int
