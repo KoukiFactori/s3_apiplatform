@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\RatingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: RatingRepository::class)]
+#[UniqueEntity(fields: ['user', 'bookmark'])]
 #[ApiResource]
 class Rating
 {
@@ -21,6 +24,7 @@ class Rating
     private ?User $user = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\Range(min: 0, max: 10, notInRangeMessage: 'Rating value must be between 0 and 10')]
     private ?int $value = null;
 
     #[ORM\ManyToOne(inversedBy: 'ratings')]
