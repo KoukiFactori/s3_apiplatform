@@ -2,23 +2,23 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Put;
+use App\Controller\GetAvatarController;
+use App\Controller\GetMeController;
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
-use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\UserRepository;
-use App\Controller\GetMeController;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\GetCollection;
-use App\Controller\GetAvatarController;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Regex;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -79,7 +79,7 @@ use Symfony\Component\Validator\Constraints\Regex;
 ]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    const FORDIBBEN_CHARACTERS = '/[<>&"]/';
+    public const FORDIBBEN_CHARACTERS = '/[<>&"]/';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
