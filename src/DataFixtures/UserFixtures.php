@@ -10,14 +10,10 @@ class UserFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // $product = new Product();
-        // $manager->persist($product);
         UserFactory::createOne(['login' => 'user1']);
         UserFactory::createOne(['login' => 'user2']);
         UserFactory::createOne(['login' => 'user3']);
 
         UserFactory::createMany(20);
-
-        $manager->flush();
     }
 }
