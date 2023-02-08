@@ -14,10 +14,9 @@ class RatingFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         foreach (UserFactory::all() as $user) {
-            RatingFactory::createMany(rand(3, 7), [
-                'user' => $user,
-                'bookmark' => BookmarkFactory::random(),
-            ]);
+            foreach (BookmarkFactory::randomRange(3, 7) as $bookmark) {
+                RatingFactory::createOne(['user' => $user, 'bookmark' => $bookmark]);
+            }
         }
     }
 
