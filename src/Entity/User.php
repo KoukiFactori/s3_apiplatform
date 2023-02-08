@@ -14,10 +14,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => 'get_User'])]
+#[ApiResource(normalizationContext: ['groups' => ['get_User']])]
 #[Get()]
-#[Put(denormalizationContext: ['groups' => 'set_User'], security: "is_granted('ROLE_USER') && object == user")]
-#[Patch(denormalizationContext: ['groups' => 'set_User'], security: "is_granted('ROLE_USER') && object == user")]
+#[Put(denormalizationContext: ['groups' => ['set_User']], security: "is_granted('ROLE_USER') && object == user")]
+#[Patch(denormalizationContext: ['groups' => ['set_User']], security: "is_granted('ROLE_USER') && object == user")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
