@@ -61,8 +61,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ],
     ]
 )]
-#[Put(denormalizationContext: ['groups' => ['set_User']], security: "is_granted('ROLE_USER') && object == user")]
-#[Patch(denormalizationContext: ['groups' => ['set_User']], security: "is_granted('ROLE_USER') && object == user")]
+#[Put(normalizationContext: ['groups' => ['get_Me', 'get_User']], denormalizationContext: ['groups' => ['set_User']], security: "is_granted('ROLE_USER') && object == user")]
+#[Patch(normalizationContext: ['groups' => ['get_Me', 'get_User']], denormalizationContext: ['groups' => ['set_User']], security: "is_granted('ROLE_USER') && object == user")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
