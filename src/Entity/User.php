@@ -2,21 +2,25 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Put;
-use App\Controller\GetAvatarController;
-use App\Controller\GetMeController;
-use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use App\Repository\UserRepository;
+use App\Controller\GetMeController;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use App\Controller\GetAvatarController;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints\Regex;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity('login')]
 #[ApiResource(normalizationContext: ['groups' => ['get_User']])]
 #[Get()]
 #[Get(
@@ -61,10 +65,20 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ],
     ]
 )]
-#[Put(normalizationContext: ['groups' => ['get_Me', 'get_User']], denormalizationContext: ['groups' => ['set_User']], security: "is_granted('ROLE_USER') && object == user")]
-#[Patch(normalizationContext: ['groups' => ['get_Me', 'get_User']], denormalizationContext: ['groups' => ['set_User']], security: "is_granted('ROLE_USER') && object == user")]
+#[Put(
+    normalizationContext: ['groups' => ['get_Me', 'get_User']],
+    denormalizationContext: ['groups' => ['set_User']],
+    security: "is_granted('ROLE_USER') && object == user")
+]
+#[Patch(
+    normalizationContext: ['groups' => ['get_Me', 'get_User']],
+    denormalizationContext: ['groups' => ['set_User']],
+    security: "is_granted('ROLE_USER') && object == user")
+]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const FORDIBBEN_CHARACTERS = '/[<>&"]/';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -72,6 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Regex(self::FORDIBBEN_CHARACTERS, match: false, message: 'Invalid string')]
     #[Groups(['get_User', 'set_User'])]
     private ?string $login = null;
 
@@ -86,10 +101,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 30)]
+    #[Regex(self::FORDIBBEN_CHARACTERS, match: false, message: 'Invalid string')]
     #[Groups(['get_User', 'set_User'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 40)]
+    #[Regex(self::FORDIBBEN_CHARACTERS, match: false, message: 'Invalid string')]
     #[Groups(['get_User', 'set_User'])]
     private ?string $lastname = null;
 
@@ -97,6 +114,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $avatar = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Email(message: 'Not a valid email')]
     #[Groups(['get_Me', 'set_User'])]
     private ?string $mail = null;
 
