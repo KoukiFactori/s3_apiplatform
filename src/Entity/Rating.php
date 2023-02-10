@@ -5,10 +5,12 @@ namespace App\Entity;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RatingRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Put;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -19,7 +21,24 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[GetCollection()]
 #[Post(
     security: 'is_granted("ROLE_USER")',
-    securityPostDenormalize: 'object.getUser() == user'
+    securityMessage: 'You need a account to post rating',
+
+    securityPostDenormalize: 'object.getUser() == user',
+    securityPostDenormalizeMessage: "You can't create rating for another user"
+)]
+#[Patch(
+    security: 'is_granted("ROLE_USER")',
+    securityMessage: 'You need a account to update rating',
+
+    securityPostDenormalize: 'object.getUser() == user',
+    securityPostDenormalizeMessage: "You are not the owner of the resource"
+)]
+#[Put(
+    security: 'is_granted("ROLE_USER")',
+    securityMessage: 'You need a account to update rating',
+
+    securityPostDenormalize: 'object.getUser() == user',
+    securityPostDenormalizeMessage: "You are not the owner of the resource"
 )]
 class Rating
 {
