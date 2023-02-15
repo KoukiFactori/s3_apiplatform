@@ -2,7 +2,6 @@
 
 namespace App\Tests\Api\Rating;
 
-use App\Entity\Rating;
 use App\Factory\BookmarkFactory;
 use App\Factory\RatingFactory;
 use App\Factory\UserFactory;
@@ -10,47 +9,47 @@ use App\Tests\Support\ApiTester;
 
 class RatingDeleteCest
 {
-  public function deleteRatingAnonymous(ApiTester $I)
-  {
-    $bookmark = BookmarkFactory::createOne();
-    $user = UserFactory::createOne();
+    public function deleteRatingAnonymous(ApiTester $I)
+    {
+        $bookmark = BookmarkFactory::createOne();
+        $user = UserFactory::createOne();
 
-    RatingFactory::createOne([
-      'user' => $user,
-      'bookmark' => $bookmark
-    ]);
+        RatingFactory::createOne([
+          'user' => $user,
+          'bookmark' => $bookmark,
+        ]);
 
-    $I->sendDelete('/api/ratings/1');
+        $I->sendDelete('/api/ratings/1');
 
-    $I->seeResponseCodeIs(401);
-  }
+        $I->seeResponseCodeIs(401);
+    }
 
-  public function deleteRatingNotOwning(ApiTester $I)
-  {
-    RatingFactory::createOne();
+    public function deleteRatingNotOwning(ApiTester $I)
+    {
+        RatingFactory::createOne();
 
-    $user = UserFactory::createOne(['login' => 'user1'])->object();
-    $I->amLoggedInAs($user);
+        $user = UserFactory::createOne(['login' => 'user1'])->object();
+        $I->amLoggedInAs($user);
 
-    $I->sendDelete('/api/ratings/1');
+        $I->sendDelete('/api/ratings/1');
 
-    $I->seeResponseCodeIs(403);
-  }
+        $I->seeResponseCodeIs(403);
+    }
 
-  public function putRatingOwning(ApiTester $I)
-  {
-    $bookmark = BookmarkFactory::createOne();
+    public function putRatingOwning(ApiTester $I)
+    {
+        $bookmark = BookmarkFactory::createOne();
 
-    $user = UserFactory::createOne(['login' => 'user1'])->object();
-    $I->amLoggedInAs($user);
+        $user = UserFactory::createOne(['login' => 'user1'])->object();
+        $I->amLoggedInAs($user);
 
-    RatingFactory::createOne([
-      'user' => $user,
-      'bookmark' => $bookmark
-    ]);
+        RatingFactory::createOne([
+          'user' => $user,
+          'bookmark' => $bookmark,
+        ]);
 
-    $I->sendDelete('/api/ratings/1');
+        $I->sendDelete('/api/ratings/1');
 
-    $I->seeResponseCodeIs(204);
-  }
+        $I->seeResponseCodeIs(204);
+    }
 }
