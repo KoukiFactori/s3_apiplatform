@@ -74,4 +74,18 @@ class RatingCreateCest
         ]);
         $I->seeResponseCodeIs(422);
     }
+
+    public function postRatingWithoutSpecifyingUser(ApiTester $I): void
+    {
+        $bookmark = BookmarkFactory::createOne();
+        $user = UserFactory::createOne(['login' => 'user1', 'password' => 'test'])->object();
+        $I->amLoggedInAs($user);
+
+        $I->sendPost('/api/ratings', [
+            'bookmark' => '/api/bookmarks/'.$bookmark->getId(),
+            'value' => 5,
+          ]);
+
+        $I->seeResponseCodeIs(201);
+    }
 }
