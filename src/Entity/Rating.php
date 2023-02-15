@@ -9,8 +9,10 @@ use ApiPlatform\Metadata\Patch;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RatingRepository;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Put;
+use App\Validator\IsAuthenticatedUser;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -22,23 +24,18 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[Post(
     security: 'is_granted("ROLE_USER")',
     securityMessage: 'You need a account to post rating',
-
-    securityPostDenormalize: 'object.getUser() == user',
-    securityPostDenormalizeMessage: "You can't create rating for another user"
 )]
 #[Patch(
-    security: 'is_granted("ROLE_USER")',
-    securityMessage: 'You need a account to update rating',
-
-    securityPostDenormalize: 'object.getUser() == user',
-    securityPostDenormalizeMessage: "You are not the owner of the resource"
+    security: 'is_granted("ROLE_USER") and object.getUser() == user',
+    securityMessage: 'Invalid account',
 )]
 #[Put(
-    security: 'is_granted("ROLE_USER")',
-    securityMessage: 'You need a account to update rating',
-
-    securityPostDenormalize: 'object.getUser() == user',
-    securityPostDenormalizeMessage: "You are not the owner of the resource"
+    security: 'is_granted("ROLE_USER") and object.getUser() == user',
+    securityMessage: 'Invalid account',
+)]
+#[Delete(
+    security: 'is_granted("ROLE_USER") and object.getUser() == user',
+    securityMessage: 'Invalid account',
 )]
 class Rating
 {
@@ -47,6 +44,7 @@ class Rating
     #[ORM\Column]
     private ?int $id = null;
 
+    #[IsAuthenticatedUser()]
     #[ORM\ManyToOne(inversedBy: 'ratings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
