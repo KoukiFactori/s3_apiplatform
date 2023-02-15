@@ -39,6 +39,29 @@ class BookmarkRepository extends ServiceEntityRepository
         }
     }
 
+    public function updateRateAverage(int $bookmarkId): void
+    {
+        $average = $this
+            ->createQueryBuilder('rating')
+            ->select('AVG(value) AS average')
+            ->where('rating.bookmark = :bookmarkId')
+            ->setParameters(['bookmarkId' => $bookmarkId])
+            ->getQuery()
+            ->execute();
+
+        if (0 == $average) {
+            return;
+        }
+
+        $this->getEntityManager()->createQueryBuilder()
+            ->update('Bookmark', 'b')
+            ->set('b.rateAverage', ':average')
+            ->where('b.id = :bookmarkId')
+            ->setParameters(['bookmarkId' => $bookmarkId, 'average' => $average])
+            ->getQuery()
+            ->execute();
+    }
+
 //    /**
 //     * @return Bookmark[] Returns an array of Bookmark objects
 //     */
