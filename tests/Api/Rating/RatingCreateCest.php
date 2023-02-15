@@ -58,4 +58,20 @@ class RatingCreateCest
     ]);
     $I->seeResponseCodeIs(422);
   }
+
+  public function postRatingForSomeoneElse(ApiTester $I): void
+  {
+    $target = UserFactory::createOne(); //User we want to use for post
+
+    $bookmark = BookmarkFactory::createOne();
+    $user = UserFactory::createOne(['login' => 'user1', 'password' => 'test'])->object();
+    $I->amLoggedInAs($user);
+
+    $I->sendPost('/api/ratings', [
+      'user' => '/api/users/' . $target->getId(),
+      'bookmark' => '/api/bookmarks/' . $bookmark->getId(),
+      'value' => 5
+    ]);
+    $I->seeResponseCodeIs(422);
+  }
 }
